@@ -20,4 +20,3 @@ Ever faced a scary `NullPointerException` or `500 Internal Server Error` at 4:45
 - **Backend:** AWS Lambda using Python 3.12 (`lambda_function.py`)
 - **AI Engine:** Amazon Bedrock (`amazon.nova-micro-v1:0`)
 - **Hosting:** AWS Amplify Hosting
-- 
