@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ye Olde Stack Trace 🏴‍☠️⚔️</title>
+    <style>
+        body { font-family: 'Georgia', serif; background: #1a1612; color: #f4e8c1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: #2c2219; padding: 2.5rem; border-radius: 12px; max-width: 650px; width: 100%; border: 2px solid #8b5a2b; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        h1 { color: #d4af37; text-align: center; margin-top: 0; font-size: 2.2rem; text-shadow: 2px 2px #000; }
+        p { text-align: center; color: #c0a980; }
+        textarea { width: 100%; height: 110px; background: #120e0b; color: #00ff66; font-family: monospace; border: 1px solid #5c4028; border-radius: 6px; padding: 12px; box-sizing: border-box; font-size: 0.9rem; margin-bottom: 15px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        select, button { padding: 12px; border-radius: 6px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        select { background: #3d2e21; color: #f4e8c1; border: 1px solid #8b5a2b; flex: 1; }
+        button { background: #8b0000; color: #fff; border: 1px solid #d4af37; flex: 2; transition: 0.2s; }
+        button:hover { background: #a52a2a; }
+        .output { margin-top: 20px; padding: 18px; background: #120e0b; border-left: 4px solid #d4af37; border-radius: 4px; font-style: italic; display: none; line-height: 1.6; color: #f4e8c1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ye Olde Stack Trace 🏴‍☠️⚔️</h1>
+        <p>Translate boring, scary error logs into pirate sea-shanties or medieval bard tales!</p>
+
+        <textarea id="errorInput" placeholder="Paste your stack trace here... e.g. 500 Internal Server Error: NullPointerException at line 42"></textarea>
+
+        <div class="controls">
+            <select id="modeSelect">
+                <option value="pirate">🏴‍☠️ High Seas Pirate</option>
+                <option value="medieval">⚔️ Medieval Bard</option>
+            </select>
+            <button onclick="translateError()">Translate Error!</button>
+        </div>
+
+        <div id="outputBox" class="output"></div>
+    </div>
+
+    <script>
+        const LAMBDA_URL = 'https://2774lz4llatdrn3rzctsonkjsu0eeybs.lambda-url.ap-southeast-2.on.aws/';
+
+        async function translateError() {
+            const error = document.getElementById('errorInput').value;
+            const mode = document.getElementById('modeSelect').value;
+            const outputBox = document.getElementById('outputBox');
+
+            if (!error.trim()) return alert('Ahoy! Enter an error log first!');
+
+            outputBox.style.display = 'block';
+            outputBox.innerText = mode === 'pirate' ? '🏴‍☠️ Deciphering ship logs...' : '⚔️ Consulting the royal scrolls...';
+
+            try {
+                const res = await fetch(LAMBDA_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ error: error, mode: mode })
+                });
+                const data = await res.json();
+                outputBox.innerText = data.translation || 'Failed to decipher the scrolls.';
+            } catch (err) {
+                outputBox.innerText = 'Arrr! The backend cannon misfired! Check your CORS settings.';
+            }
+        }
+    </script>
+</body>
+</html>
